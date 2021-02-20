@@ -1,0 +1,15 @@
+{
+  "name": "grpc-coursework",
+  "version": "0.0.1",
+  "description": "gRPC Coursework for ECS656U",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Heron",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.2.8",
+    "express": "^4.17.1"
+  }
+}
