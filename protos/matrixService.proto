@@ -1,0 +1,24 @@
+syntax = "proto3";
+package matrixservice;
+
+service MatrixOperations {
+    rpc AddMatrices (AddRequest) returns (AddResponse) {}
+}
+
+// A single *square* matrix, represented by a flattened array and size value.
+message Matrix {
+    repeated int32 values = 1;
+    int32 square_size = 2;
+}
+
+// An add Request comprised of two individual matrices
+message AddRequest {
+    Matrix a = 1;
+    Matrix b = 2;
+}
+
+// A response to an add request
+message AddResponse {
+    Matrix res = 1;
+    string msg = 2;
+}
