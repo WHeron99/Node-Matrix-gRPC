@@ -8,7 +8,7 @@ service MatrixOperations {
 // A single *square* matrix, represented by a flattened array and size value.
 message Matrix {
     repeated int32 values = 1;
-    int32 square_size = 2;
+    int32 size = 2;
 }
 
 // An add Request comprised of two individual matrices
@@ -19,6 +19,6 @@ message AddRequest {
 
 // A response to an add request
 message AddResponse {
-    Matrix res = 1;
+    Matrix matrix = 1;
     string msg = 2;
 }
