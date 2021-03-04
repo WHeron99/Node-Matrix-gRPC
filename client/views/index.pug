@@ -1,0 +1,21 @@
+html 
+    head 
+        title Matrix gRPC Calculator
+    body 
+        h1 Matrix Calculator
+        br
+        form(action='/upload' method='post' encType='multipart/form-data')
+            input(type='file' name='file1')
+            br
+            input(type='file' name='file2')
+            br
+            br
+            input(type='radio' name='operation' id='addition' value='addition' checked)
+            label(for='addition') Addition
+            br
+            input(type='radio' name='operation' id='multiplication' value='multiplication')
+            label(for='multiplication') Multiplication 
+            br
+            br
+
+            input(type='submit' value='Submit')

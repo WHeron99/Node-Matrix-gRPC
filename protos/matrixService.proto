@@ -3,6 +3,7 @@ package matrixservice;
 
 service MatrixOperations {
     rpc AddMatrices (AddRequest) returns (AddResponse) {}
+    rpc MultiplyMatrices (MultRequest) returns (MultResponse) {}
 }
 
 // A single *square* matrix, represented by a flattened array and size value.
@@ -20,5 +21,19 @@ message AddRequest {
 // A response to an add request
 message AddResponse {
     Matrix matrix = 1;
-    string msg = 2;
+    bool success = 2;
+    string msg = 3;
+}
+
+// Request to multiply two arrays
+message MultRequest {
+    Matrix a = 1;
+    Matrix b = 2;
+    int32 deadline = 3;     // Preffered response time (s)
+}
+
+message MultResponse {
+    Matrix matrix = 1;
+    bool success = 2;
+    string msg = 3;
 }
