@@ -32,6 +32,7 @@ message MultRequest {
     int32 deadline = 3;     // Preffered response time (s)
 }
 
+// A response to a mult request
 message MultResponse {
     Matrix matrix = 1;
     bool success = 2;
