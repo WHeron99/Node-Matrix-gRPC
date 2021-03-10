@@ -29,7 +29,7 @@ message AddResponse {
 message MultRequest {
     Matrix a = 1;
     Matrix b = 2;
-    int32 deadline = 3;     // Preffered response time (s)
+    int32 deadline = 3;     // Preffered response time (ms)
 }
 
 // A response to a mult request
@@ -37,4 +37,5 @@ message MultResponse {
     Matrix matrix = 1;
     bool success = 2;
     string msg = 3;
+    int32 processTime = 4;  // How long the server took to process the request (ms)
 }

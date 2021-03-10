@@ -1,3 +1,9 @@
+/*
+ *  Definition of gRPC client, to be embedded in the REST interface.
+ */
+
+const target_address = 'localhost:1234'
+
 const PROTO_PATH = __dirname + '/../protos/matrixService.proto';
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
@@ -15,7 +21,7 @@ let packageDefinition = protoLoader.loadSync(
 const matrix_service = grpc.loadPackageDefinition(packageDefinition).matrixservice;
 
 const client = new matrix_service.MatrixOperations(
-    'localhost:1234', 
+    target_address, 
     grpc.credentials.createInsecure()
 );
 

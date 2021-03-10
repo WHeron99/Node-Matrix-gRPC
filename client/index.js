@@ -1,3 +1,9 @@
+/*
+ *  This files denotes the client program, which allows the user to both access a 
+ *      a RESTful web interface, which can call on a gRPC client in order to produce
+ *      matrix operation results. 
+ */
+
 // Import grpc_client - which can be called on to do remote actions via the server
 const grpc_client = require('./matrixClient');
 
@@ -76,15 +82,15 @@ app.post('/upload', (req, res) => {
     if (req.body.operation == 'addition') {
         grpc_client.addMatrices( 
             {
-            a: {values: mat_a.flat(), size: len},
-            b: {values: mat_b.flat(), size: len}
+                a: {values: mat_a.flat(), size: len},
+                b: {values: mat_b.flat(), size: len}
             },
             (grpc_req, grpc_res) => {
                 console.log("Add Response recieved!");
                 console.log(grpc_res);
 
                 if (!grpc_res.success) {
-                    // Remote operation failed, attempt to report on it
+                    // Remote operation failed, report this with a 500 code
                     return res.status(500).send(`500: Server Error - ${grpc_res.msg}`);
                 }
 
@@ -99,7 +105,30 @@ app.post('/upload', (req, res) => {
         )
     }
     else if (req.body.operation == 'multiplication') {
-        return res.send("Haven't implemented this yet!");
+        grpc_client.multiplyMatrices(
+            {
+                a: {values: mat_a.flat(), size: len},
+                b: {values: mat_b.flat(), size: len},
+                deadline: req.body.deadline
+            },
+            (grpc_req, grpc_res) => {
+                console.log("Multiply Response recieved!");
+                console.log(grpc_res);
+
+                if (!grpc_res.success) {
+                    // Remote operation failed, report this with a 500 code
+                    return res.status(500).send(`500: Server Error - ${grpc_res.msg}`);
+                }
+
+                // Retrieve the result, and reshape it to a 2d array from flattened form:
+                let mat_res = math.matrix(grpc_res.matrix.values);
+                mat_res = math.reshape(mat_res, [grpc_res.matrix.size, -1]);
+
+                // Send result as JSON Array
+                res.header("Content-Type", "application/json");
+                return res.json(mat_res.valueOf());
+            }
+        )
     }
     else {
         return res.status(400).send("Invalid operation selected!");

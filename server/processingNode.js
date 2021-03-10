@@ -1,12 +1,11 @@
 /*
- *  This file creates the client-facing server, which will directly service
- *      the client requests. In order to distribute the workload, this server will
- *      make further calls to distributed nodes which will execute parts of the process,
- *      such as multiplying two given blocks.
- *  Nodes will be selected via round-robin to service requests, from a list of known processing
- *      node addresses. 
+ *  This file will create a gRPC server which will act purely as a processing
+ *      node for the client-facing matrixServer. When the client-facing server
+ *      wants to process multiplication in a distributed manner, it will execute
+ *      RPCs on these nodes in order to distribute the processing
+ *  These nodes will time their responses, such that they can inform the client-facing
+ *      server of the expected processing time.
  */
-
 
 const PROTO_PATH = __dirname + '/../protos/matrixService.proto';
 const grpc = require('@grpc/grpc-js');
@@ -26,6 +25,7 @@ let packageDefinition = protoLoader.loadSync(
 
 let matrix_service = grpc.loadPackageDefinition(packageDefinition).matrixservice;
 
+// Define the addition and multiplication services
 function addMatrices(call, callback) {
     console.log('Adding Matrices!');
     if (call.request.a.size != call.request.b.size) {
@@ -36,34 +36,37 @@ function addMatrices(call, callback) {
     }
     else {
         // Map addition across respective elements of a and b - no reason to reshape
-        let mat_a = call.request.a.values;
-        let mat_b = call.request.b.values;
-        let mat_res = mat_a.map((v, i) => {
-            return v + mat_b[i];
-        })
-        callback(null, {matrix: {values: mat_res, size: call.request.a.size},
-                        success: true});
+        let mat_a = math.matrix(call.request.a.values);
+        let mat_b = math.matrix(call.request.b.values);
+        mat_a = math.reshape(mat_a, [call.request.a.size, -1]);
+        mat_b = math.reshape(mat_b, [call.request.b.size, -1]);
+        
+        let mat_res = math.add(mat_a, mat_b);
+
+        callback(null, {matrix: {values: mat_res.valueOf().flat(), size: call.request.a.size},
+                    success: true});
     }
 }
 
+// For the processing node, we aren't interested in the deadline - we just want to multiply the two given matrices
+//      and return the result asap.
 function multiplyMatrices(call, callback) {
     console.log("Multiplying Matrices");
 
-    let deadline = call.request.deadline;
+    let start_time = process.hrtime();
 
     let mat_a = math.matrix(call.request.a.values);
     let mat_b = math.matrix(call.request.b.values);
     mat_a = math.reshape(mat_a, [call.request.a.size, -1]);
     mat_b = math.reshape(mat_b, [call.request.b.size, -1]);
 
-    // PLACEHOLDER - DO MULTIPLICATION WITH BLOCK DIVISION
     mat_res =  math.multiply(mat_a, mat_b);
 
-    // TODO : Handle distribution of process to other machines/servers via round-robin
-    // TODO : Deadlining, Footprinting etc.
+    let end_time = process.hrtime(start_time);
+    let time_dif_ms = (end_time[0]* 1000000000 + end_time[1]) / 1000000;     // Convert in to ns, then back to ms
 
     callback(null, {matrix: {values: mat_res.valueOf().flat(), size: call.request.a.size},
-                    success: true});
+                    success: true, processTime: time_dif_ms});
 }
 
 // Start gRPC server to serve the requests
