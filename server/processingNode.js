@@ -51,7 +51,7 @@ function addMatrices(call, callback) {
 // For the processing node, we aren't interested in the deadline - we just want to multiply the two given matrices
 //      and return the result asap.
 function multiplyMatrices(call, callback) {
-    console.log("Multiplying Matrices");
+    console.log(new Date().toLocaleString() + ": Multiplying Matrices");
 
     let start_time = process.hrtime();
 
