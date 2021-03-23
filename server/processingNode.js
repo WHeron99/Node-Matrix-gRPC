@@ -73,7 +73,7 @@ function multiplyMatrices(call, callback) {
 const server = new grpc.Server();
 
 server.addService(matrix_service.MatrixOperations.service, {addMatrices: addMatrices, multiplyMatrices: multiplyMatrices});
-server.bindAsync('0.0.0.0:1234', grpc.ServerCredentials.createInsecure(), () => {
+server.bindAsync('0.0.0.0:1235', grpc.ServerCredentials.createInsecure(), () => {
     server.start();
-    console.log(`gRPC server listening on port 1234`)
+    console.log(`gRPC server listening on port 1235`)
 });

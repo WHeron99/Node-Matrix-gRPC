@@ -2,7 +2,8 @@
  *  Definition of gRPC client, to be embedded in the REST interface.
  */
 
-const target_address = 'localhost:1234'
+// Given address should point to client-facing server, which will further delegate RPCs
+const target_address = 'localhost:1234';
 
 const PROTO_PATH = __dirname + '/../protos/matrixService.proto';
 const grpc = require('@grpc/grpc-js');
