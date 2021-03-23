@@ -10,15 +10,15 @@ html
             input(type='file' name='file2')
             br
             br
-            input(type='radio' name='operation' id='addition' value='addition' checked)
+            input(type='radio' name='operation' id='addition' value='addition')
             label(for='addition') Addition
             br
-            input(type='radio' name='operation' id='multiplication' value='multiplication')
+            input(type='radio' name='operation' id='multiplication' value='multiplication' checked)
             label(for='multiplication') Multiplication 
             br
             br
-            label(for='deadline') Deadline:
-            input(type='number' min=0 max=60 id='deadline' name='deadline')
+            label(for='deadline') Deadline (ms):
+            input(type='number' min=0 id='deadline' name='deadline' value=0)
             br
 
             input(type='submit' value='Submit')
